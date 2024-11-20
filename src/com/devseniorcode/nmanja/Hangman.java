@@ -75,14 +75,45 @@ public class Hangman {
             System.out.println("Ingresa una letra: ");
             var letter = sc.nextLine().toUpperCase().charAt(0);
 
+
+            if(!Character.isLetter(letter)){
+                System.out.println("Letra no valida");
+                continue;
+            }
+
+            if(guessed.contains(letter)){
+                System.out.println("Ya has ingresado esta letra");
+                continue;
+            }
+
             if(word.indexOf(letter) != -1){  //Si no se encuentra en el indice, el indexOf devuelve -1
                 guessed.add(letter);
                 for (int i = 0; i < word.length(); i++) {
                     if(word.charAt(i) == letter){ //si encuentra la letra en palabras
                         letters.set(i, letter); //en la lista de las lineas, reemplace en el indice la letra adivinada // i=posicion letter = letra ingresada
-                    }
+                    } 
                 }
+            } else {
+                guessed.add(letter);
+                errors++; //incremento los errores
             }
+
+            if ( errors == 6){
+                showScreen(letters, guessed, errors);
+                System.out.println("Has perdido");
+                System.out.println("La palabra era: "+word);
+                endGame = true;
+            }
+
+            //Verifica si no hay mas guiones bajos
+
+            if(!letters.contains('_')){
+                showScreen(letters, guessed, errors);
+                System.out.println("Has ganado!!!");
+                endGame = true;
+            }
+            
+            
 
 
             //Verificas la letra en la palabra
@@ -97,7 +128,6 @@ public class Hangman {
             //Verificar si ya ganó
                 //Termina el juego
 
-                endGame = true;
 
 
 
@@ -106,21 +136,87 @@ public class Hangman {
     }
 
     private static void showScreen(List<Character> letters, List<Character> guessed, int errors){
-        System.out.println("Palabra a adivinar: ");
+        System.out.print("Palabra a adivinar: ");
         for(var letter : letters){      //Por cada caracter en la listra letters
             System.out.printf("%c ",letter);
         }
         System.out.println();
 
-        System.out.println("Letras intentadas: ");
-        for(var letter : guessed){      //Por cada caracter en la listra letters
-            System.out.printf("%c ",guessed);
+        System.out.print("Letras intentadas: ");
+        for(var letter : guessed){      //Por cada caracter en la lista guessed
+            System.out.printf("%c ",letter);
         }
         System.out.println();
 
         //Horca según el número de errores
 
         var draw = switch(errors){
+            case 6 -> """
+                           +------+
+                           |      |
+                           |      0
+                           |    \\|//
+                           |      |
+                           |    // \\
+                           |
+                        +--+--+
+                        |     |
+                        """;
+            case 5 -> """
+                           +------+
+                           |      |
+                           |      0
+                           |    \\|//
+                           |      |
+                           |    //
+                           |
+                        +--+--+
+                        |     |
+                        """;
+            case 4 -> """
+                           +------+
+                           |      |
+                           |      0
+                           |    \\|//
+                           |      |
+                           |     
+                           |
+                        +--+--+
+                        |     |
+                        """;
+            case 3 -> """
+                           +------+
+                           |      |
+                           |      0
+                           |    \\|
+                           |      |
+                           |     
+                           |
+                        +--+--+
+                        |     |
+                        """;
+            case 2 -> """
+                           +------+
+                           |      |
+                           |      0
+                           |      |
+                           |      |
+                           |     
+                           |
+                        +--+--+
+                        |     |
+                        """;
+            case 1 -> """
+                           +------+
+                           |      |
+                           |      0
+                           |     
+                           |      
+                           |     
+                           |
+                        +--+--+
+                        |     |
+                        """;
             default -> """
                            +------+
                            |      |
